@@ -52,8 +52,8 @@ class MazeGame(tk.Tk):
         self.instruction_frame.pack()
 
         # Instruction label and Text widget
-        tk.Label(self.instruction_frame, text="Instructions:").pack()
-        self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25)
+        tk.Label(self.instruction_frame, text="Instructions:", font=("Arial", 14)).pack()
+        self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25, font=("Arial", 14))
         self.instruction_entry.pack(pady=10)
 
         self.instruction_entry.insert(tk.END, "Move Down 3\n")
@@ -71,22 +71,12 @@ class MazeGame(tk.Tk):
 
         # Buttons
         self.execute_button = tk.Button(
-            self.control_frame, text="Execute", command=self.execute_instruction
+            self.control_frame, text="Execute", command=self.execute_instruction, font=("Arial", 14)
         )
         self.execute_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-        # self.pause_button = tk.Button(
-        #             self.control_frame, text="Pause", command=self.pause_game
-        #         )
-        #         self.pause_button.pack(side=tk.LEFT, padx=5, pady=5)
-
-        #         self.continue_button = tk.Button(
-        #             self.control_frame, text="Continue", command=self.continue_game
-        #         )
-        #         self.continue_button.pack(side=tk.LEFT, padx=5, pady=5)
-
         self.reset_button = tk.Button(
-            self.control_frame, text="Reset", command=self.reset_game
+            self.control_frame, text="Reset", command=self.reset_game, font=("Arial", 14)
         )
         self.reset_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
