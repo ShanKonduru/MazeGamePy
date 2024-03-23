@@ -1,10 +1,17 @@
 import tkinter as tk
+from tkinter import messagebox
+import pygame
 
 class MazeGame(tk.Tk):
     def __init__(self, maze_size=10):
         super().__init__()
         
         self.title("Maze Game")
+        
+        # Initialize pygame mixer
+        pygame.mixer.init()
+        
+        # self.jackpot_sound = pygame.mixer.Sound("jackpot.wav")  # You can replace "jackpot.wav" with the path to your jackpot winning sound file
         
         # Maze parameters
         self.maze_size = maze_size
@@ -20,8 +27,9 @@ class MazeGame(tk.Tk):
             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 1, 1, 1, 1, 1, 1, 1, 0]
         ]
+
         self.start_pos = (0, 0)
-        self.end_pos = (9, 9)
+        self.end_pos = (8, 9)
         self.current_pos = self.start_pos
         
         # Create maze canvas
@@ -75,16 +83,25 @@ class MazeGame(tk.Tk):
         new_x = self.current_pos[0] + dx
         new_y = self.current_pos[1] + dy
         
+        # print(f"Current Position: {self.current_pos}, End Position: {self.end_pos}")  # Debug print
+        # print(f"New Position: ({new_x}, {new_y})")  # Debug print
+        
         if 0 <= new_x < self.maze_size and 0 <= new_y < self.maze_size and self.maze[new_y][new_x] == 1:
             cell_size = 40
             self.maze_canvas.move(self.object_id, dx*cell_size, dy*cell_size)
             self.current_pos = (new_x, new_y)
             
             if self.current_pos == self.end_pos:
-                tk.messagebox.showinfo("Congratulations!", "You've reached the end of the maze!")
-                self.current_pos = self.start_pos
-                self.maze_canvas.coords(self.object_id, self.start_pos[0]*cell_size+5, self.start_pos[1]*cell_size+5,
-                                        (self.start_pos[0]+1)*cell_size-5, (self.start_pos[1]+1)*cell_size-5)
+                # self.jackpot_sound.play()  # Play jackpot winning sound
+                self.end_game()  # Call end_game method to display message box and close the window
+        
+        elif self.current_pos != self.end_pos:  # Check if not at the end position
+            # tk.messagebox.showwarning("Warning", "Invalid move!")
+            print("Invalid move! @ " + f"New Position: ({new_x}, {new_y})"  )
+
+    def end_game(self):
+        tk.messagebox.showinfo("Congratulations!", "You've reached the end of the maze!")
+        self.destroy()  # Close the game window
     
     def execute_instruction(self):
         instruction = self.instruction_entry.get()
@@ -103,7 +120,7 @@ class MazeGame(tk.Tk):
             
             self.move(dx, dy)
         else:
-            tk.messagebox.showerror("Error", "Invalid instruction format. Use 'MoveLeft', 'MoveRight', 'MoveUp', or 'MoveDown' followed by a number.")
+            messagebox.showerror("Error", "Invalid instruction format. Use 'MoveLeft', 'MoveRight', 'MoveUp', or 'MoveDown' followed by a number.")
         
         self.instruction_entry.delete(0, tk.END)
 
