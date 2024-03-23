@@ -3,15 +3,14 @@ import tkinter as tk
 from tkinter import messagebox
 import pygame
 
+
 class MazeGame(tk.Tk):
     def __init__(self, maze_size=10):
         super().__init__()
-        
-        self.paused = False
-        
-        self.dx, self.dy = 0, 0  # Initialize dx and dy
 
-        self.root = tk.Tk()  # Initialize root window
+        self.paused = False
+        self.index = 0
+        self.dx, self.dy = 0, 0  # Initialize dx and dy
 
         self.title("The Maze Game")
 
@@ -52,33 +51,42 @@ class MazeGame(tk.Tk):
         self.instruction_frame = tk.Frame(self.control_frame)
         self.instruction_frame.pack()
 
-        # Set background color of the form to pitch black
-        self.root.configure(bg="black")
-
-        # Instruction grid
+        # Instruction label and Text widget
         tk.Label(self.instruction_frame, text="Instructions:").pack()
-        self.instruction_entry = tk.Text(
-            self.instruction_frame, width=50, height=25
-        )  # Set width and height
+        self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25)
         self.instruction_entry.pack(pady=10)
 
+        self.instruction_entry.insert(tk.END, "Move Down 3\n")
+        self.instruction_entry.insert(tk.END, "Move Right 2\n")
+        self.instruction_entry.insert(tk.END, "Move Up 2\n")
+        self.instruction_entry.insert(tk.END, "Move Right 5\n")
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Left 3\n")
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Left 2\n")
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Left 1\n")
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Right 6\n")
+
+        # Buttons
         self.execute_button = tk.Button(
-            self.instruction_frame, text="Execute", command=self.execute_instruction
+            self.control_frame, text="Execute", command=self.execute_instruction
         )
         self.execute_button.pack(side=tk.LEFT, padx=5, pady=5)
 
         self.pause_button = tk.Button(
-            self.instruction_frame, text="Pause", command=self.pause_game
+            self.control_frame, text="Pause", command=self.pause_game
         )
         self.pause_button.pack(side=tk.LEFT, padx=5, pady=5)
 
         self.continue_button = tk.Button(
-            self.instruction_frame, text="Continue", command=self.continue_game
+            self.control_frame, text="Continue", command=self.continue_game
         )
         self.continue_button.pack(side=tk.LEFT, padx=5, pady=5)
 
         self.reset_button = tk.Button(
-            self.instruction_frame, text="Reset", command=self.reset_game
+            self.control_frame, text="Reset", command=self.reset_game
         )
         self.reset_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
@@ -148,8 +156,9 @@ class MazeGame(tk.Tk):
 
     def end_game(self):
         tk.messagebox.showinfo("Congratulations!", "You WON!!!")
-        # self.destroy()  # Close the game window
         self.enable_disable_buttons()
+        # Clear the instruction entry
+        self.instruction_entry.delete("1.0", "end")
         self.reset_game()
 
     def pause_game(self):
@@ -160,7 +169,7 @@ class MazeGame(tk.Tk):
         self.reset_button.config(state=tk.NORMAL)
 
     def enable_disable_buttons(self):
-        if(self.instructions.count==0):
+        if self.instructions.count == 0:
             self.execute_button.config(state=tk.DISABLED)
             self.pause_button.config(state=tk.DISABLED)
             self.continue_button.config(state=tk.DISABLED)
@@ -188,11 +197,14 @@ class MazeGame(tk.Tk):
     def execute_next_instruction(self):
         dx, dy = 0, 0
 
-        for instruction in self.instructions:
+        for index, instruction in enumerate(
+            self.instructions
+        ):  # Using enumerate to get index
+            self.index = index  # Set index to the current iteration index
 
             if self.paused:
                 return
-        
+
             parts = instruction.split(" ")
 
             if len(parts) == 3 and (parts[0].lower() == "move"):
@@ -215,7 +227,11 @@ class MazeGame(tk.Tk):
                     time.sleep(0.5)  # Sleep for 0.5 seconds
 
                     # Update the Tkinter main loop to refresh the canvas
-                    self.root.update()
+                    self.update()
+
+                    # Highlight the executed instruction by changing the background color to green
+                    self.highlight_instruction(index)
+
             else:
                 print(f"Error with {instruction}")
                 break  # Stop executing further instructions on error
@@ -228,18 +244,43 @@ class MazeGame(tk.Tk):
         self.current_pos = self.start_pos
         x, y = self.start_pos
         cell_size = 40
+
         self.object_id = self.maze_canvas.create_oval(
-            x * cell_size,
-            y * cell_size,
-            (x + 1) * cell_size,
-            (y + 1) * cell_size,
+            self.start_pos[0] * cell_size + 5,
+            self.start_pos[1] * cell_size + 5,
+            (self.start_pos[0] + 1) * cell_size - 5,
+            (self.start_pos[1] + 1) * cell_size - 5,
             fill="blue",
         )
+
         # Clear the instruction entry
         self.instruction_entry.delete("1.0", "end")
+
+        self.instruction_entry.insert(tk.END, "Move Down 3\n")
+        self.instruction_entry.insert(tk.END, "Move Right 2\n")
+        self.instruction_entry.insert(tk.END, "Move Up 2\n")
+        self.instruction_entry.insert(tk.END, "Move Right 5\n")
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Left 3\n")
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Left 2\n")  # Fixed typo here
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Left 1\n")
+        self.instruction_entry.insert(tk.END, "Move Down 2\n")
+        self.instruction_entry.insert(tk.END, "Move Right 6\n")
+
         # Reset dx, dy
         self.dx, self.dy = 0, 0
         self.enable_disable_buttons()
+
+    def highlight_instruction(self, index):
+        # Get the start and end positions of the line to highlight
+        start_index = f"{index + 1}.0"
+        end_index = f"{index + 1}.end"
+
+        # Change the background color of the line to green
+        self.instruction_entry.tag_add("highlight", start_index, end_index)
+        self.instruction_entry.tag_configure("highlight", background="green")
 
     def is_valid_position(self, x, y):
         # Check if the new position is within the maze boundaries and is a valid path (i.e., maze walls)
