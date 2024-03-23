@@ -20,7 +20,7 @@ class MazeGame(tk.Tk):
         # Maze parameters
         self.maze_size = maze_size
         self.maze = [
-            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 'B', 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 0, 1, 1, 1, 1, 1, 1, 0],
             [0, 1, 0, 1, 0, 0, 0, 0, 1, 0],
             [0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
@@ -29,11 +29,11 @@ class MazeGame(tk.Tk):
             [0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
             [0, 0, 1, 1, 0, 1, 1, 1, 1, 0],
             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 1, 1, 1, 1, 1, 1, 'E', 0],
         ]
 
-        self.start_pos = (1, 0)
-        self.end_pos = (8, 9)
+        self.start_pos = self.find_position('B')
+        self.end_pos = self.find_position('E')
         self.current_pos = self.start_pos
 
         # Create maze canvas
@@ -86,6 +86,14 @@ class MazeGame(tk.Tk):
         self.bind("<Left>", lambda event: self.move(-1, 0))
         self.bind("<Right>", lambda event: self.move(1, 0))
 
+    def find_position(self, marker):
+        # Find the position of the given marker in the maze.
+        for y, row in enumerate(self.maze):
+            for x, cell in enumerate(row):
+                if cell == marker:
+                    return x, y
+        return None
+
     def draw_maze(self):
         cell_size = 40
         for y in range(self.maze_size):
@@ -98,22 +106,22 @@ class MazeGame(tk.Tk):
                         (y + 1) * cell_size,
                         fill="white",
                     )
-
-        self.maze_canvas.create_rectangle(
-            self.start_pos[0] * cell_size,
-            self.start_pos[1] * cell_size,
-            (self.start_pos[0] + 1) * cell_size,
-            (self.start_pos[1] + 1) * cell_size,
-            fill="green",
-        )
-        self.maze_canvas.create_rectangle(
-            self.end_pos[0] * cell_size,
-            self.end_pos[1] * cell_size,
-            (self.end_pos[0] + 1) * cell_size,
-            (self.end_pos[1] + 1) * cell_size,
-            fill="red",
-        )
-
+                elif self.maze[y][x] == 'B':
+                    self.maze_canvas.create_rectangle(
+                        x * cell_size,
+                        y * cell_size,
+                        (x + 1) * cell_size,
+                        (y + 1) * cell_size,
+                        fill="green",
+                    )
+                elif self.maze[y][x] == 'E':
+                    self.maze_canvas.create_rectangle(
+                        x * cell_size,
+                        y * cell_size,
+                        (x + 1) * cell_size,
+                        (y + 1) * cell_size,
+                        fill="red",
+                    )
         # Set background color of the canvas to pitch black
         self.maze_canvas.configure(bg="black")
 
