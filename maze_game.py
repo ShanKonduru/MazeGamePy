@@ -50,6 +50,12 @@ class MazeGame(tk.Tk):
         self.instruction_entry.pack(pady=10)
         tk.Button(self.instruction_frame, text="Execute", command=self.execute_instruction).pack()
         
+        # Bind keyboard controls
+        self.bind("<Up>", lambda event: self.move(0, -1))
+        self.bind("<Down>", lambda event: self.move(0, 1))
+        self.bind("<Left>", lambda event: self.move(-1, 0))
+        self.bind("<Right>", lambda event: self.move(1, 0))
+        
     def draw_maze(self):
         cell_size = 40
         for y in range(self.maze_size):
