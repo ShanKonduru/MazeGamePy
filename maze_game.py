@@ -136,7 +136,8 @@ class MazeGame(tk.Tk):
 
     def end_game(self):
         tk.messagebox.showinfo("Congratulations!", "You WON!!!")
-        self.destroy()  # Close the game window
+        # self.destroy()  # Close the game window
+        self.reset_game()
 
     def execute_instruction(self):
         instructions = self.instruction_entry.get(
