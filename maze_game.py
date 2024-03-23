@@ -11,6 +11,8 @@ class MazeGame(tk.Tk):
         self.index = 0
         self.dx, self.dy = 0, 0  # Initialize dx and dy
 
+        self.instructions = []  # Initialize instructions list
+
         self.title("The Maze Game")
 
         # Initialize pygame mixer
@@ -48,14 +50,24 @@ class MazeGame(tk.Tk):
 
         self.direction_frame = tk.Frame(self.control_frame)
         self.direction_frame.pack(pady=20)
-
+            
         self.instruction_frame = tk.Frame(self.control_frame)
         self.instruction_frame.pack()
+
+        # Create a vertical scrollbar
+        self.scrollbar = tk.Scrollbar(self.instruction_frame)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Instruction label and Text widget
         tk.Label(self.instruction_frame, text="Instructions:", font=("Arial", 14)).pack()
         self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25, font=("Arial", 14))
         self.instruction_entry.pack(pady=10)
+
+        # Attach scrollbar to the Text widget
+        self.scrollbar.config(command=self.instruction_entry.yview)
+
+        # Bind the MouseWheel event to the Text widget
+        self.instruction_entry.bind("<MouseWheel>", self.on_mousewheel)
 
         # Buttons
         self.execute_button = tk.Button(
@@ -74,6 +86,10 @@ class MazeGame(tk.Tk):
         self.bind("<Left>", lambda event: self.move(-1, 0))
         self.bind("<Right>", lambda event: self.move(1, 0))
 
+    def on_mousewheel(self, event):
+        # Scroll the Text widget with the mouse wheel
+        self.instruction_entry.yview_scroll(-1 * int(event.delta/120), "units")
+
     def find_position(self, marker):
         # Find the position of the given marker in the maze.
         for y, row in enumerate(self.maze):
@@ -81,6 +97,22 @@ class MazeGame(tk.Tk):
                 if cell == marker:
                     return x, y
         return None
+
+    def move_left(self):
+        self.instructions.append("Move Left 1")
+        self.instruction_entry.insert(tk.END, "Move Left 1" + "\n")
+
+    def move_right(self):
+        self.instructions.append("Move Right 1")
+        self.instruction_entry.insert(tk.END, "Move Right 1" + "\n")
+
+    def move_up(self):
+        self.instructions.append("Move Up 1")
+        self.instruction_entry.insert(tk.END, "Move Up 1" + "\n")
+
+    def move_down(self):
+        self.instructions.append("Move Down 1")
+        self.instruction_entry.insert(tk.END, "Move Down 1" + "\n")
 
     def draw_maze(self):
         cell_size = 40
@@ -124,6 +156,18 @@ class MazeGame(tk.Tk):
     def move(self, dx, dy):
         new_x = self.current_pos[0] + dx
         new_y = self.current_pos[1] + dy
+
+        if(dx == 0 ):
+            if(dy == -1 ):
+                self.move_up()
+            elif (dy == 1 ):
+                self.move_down()
+        elif(dx == -1 ):
+            if(dy == 0 ):
+                self.move_left()
+        elif (dx == 1 ):
+            if(dy == 0 ):
+                self.move_right()
 
         if (
             0 <= new_x < self.maze_size
