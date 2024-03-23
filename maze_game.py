@@ -6,12 +6,14 @@ import pygame
 class MazeGame(tk.Tk):
     def __init__(self, maze_size=10):
         super().__init__()
-
+        
+        self.paused = False
+        
         self.dx, self.dy = 0, 0  # Initialize dx and dy
 
         self.root = tk.Tk()  # Initialize root window
 
-        self.title("Maze Game")
+        self.title("The Maze Game")
 
         # Initialize pygame mixer
         pygame.mixer.init()
@@ -60,15 +62,25 @@ class MazeGame(tk.Tk):
         )  # Set width and height
         self.instruction_entry.pack(pady=10)
 
-        execute_button = tk.Button(
+        self.execute_button = tk.Button(
             self.instruction_frame, text="Execute", command=self.execute_instruction
         )
-        execute_button.pack(side=tk.LEFT, padx=5, pady=5)
+        self.execute_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-        reset_button = tk.Button(
+        self.pause_button = tk.Button(
+            self.instruction_frame, text="Pause", command=self.pause_game
+        )
+        self.pause_button.pack(side=tk.LEFT, padx=5, pady=5)
+
+        self.continue_button = tk.Button(
+            self.instruction_frame, text="Continue", command=self.continue_game
+        )
+        self.continue_button.pack(side=tk.LEFT, padx=5, pady=5)
+
+        self.reset_button = tk.Button(
             self.instruction_frame, text="Reset", command=self.reset_game
         )
-        reset_button.pack(side=tk.RIGHT, padx=5, pady=5)
+        self.reset_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
         # Bind keyboard controls
         self.bind("<Up>", lambda event: self.move(0, -1))
@@ -137,19 +149,51 @@ class MazeGame(tk.Tk):
     def end_game(self):
         tk.messagebox.showinfo("Congratulations!", "You WON!!!")
         # self.destroy()  # Close the game window
+        self.enable_disable_buttons()
         self.reset_game()
 
-    def execute_instruction(self):
-        instructions = self.instruction_entry.get(
-            "1.0", "end-1c"
-        ).splitlines()  # Retrieve all text from Text widget and split by lines
-        print(instructions)
+    def pause_game(self):
+        self.paused = True
+        self.execute_button.config(state=tk.DISABLED)
+        self.pause_button.config(state=tk.DISABLED)
+        self.continue_button.config(state=tk.NORMAL)
+        self.reset_button.config(state=tk.NORMAL)
 
+    def enable_disable_buttons(self):
+        if(self.instructions.count==0):
+            self.execute_button.config(state=tk.DISABLED)
+            self.pause_button.config(state=tk.DISABLED)
+            self.continue_button.config(state=tk.DISABLED)
+            self.reset_button.config(state=tk.NORMAL)
+        else:
+            self.execute_button.config(state=tk.NORMAL)
+            self.pause_button.config(state=tk.DISABLED)
+            self.continue_button.config(state=tk.DISABLED)
+            self.reset_button.config(state=tk.NORMAL)
+
+    def execute_instruction(self):
+        self.instructions = self.instruction_entry.get("1.0", "end-1c").splitlines()
+        self.execute_button.config(state=tk.DISABLED)
+        self.pause_button.config(state=tk.NORMAL)
+        self.continue_button.config(state=tk.DISABLED)
+        self.paused = False
+        self.execute_next_instruction()
+
+    def continue_game(self):
+        self.paused = False
+        self.pause_button.config(state=tk.NORMAL)
+        self.continue_button.config(state=tk.DISABLED)
+        self.execute_next_instruction()
+
+    def execute_next_instruction(self):
         dx, dy = 0, 0
 
-        for instruction in instructions:
+        for instruction in self.instructions:
+
+            if self.paused:
+                return
+        
             parts = instruction.split(" ")
-            print(parts)
 
             if len(parts) == 3 and (parts[0].lower() == "move"):
                 direction = parts[
@@ -172,12 +216,9 @@ class MazeGame(tk.Tk):
 
                     # Update the Tkinter main loop to refresh the canvas
                     self.root.update()
-
             else:
                 print(f"Error with {instruction}")
                 break  # Stop executing further instructions on error
-
-        # self.instruction_entry.delete("1.0", "end")  # Clear the Text widget
 
     def reset_game(self):
         # Delete the object from the canvas
@@ -194,12 +235,11 @@ class MazeGame(tk.Tk):
             (y + 1) * cell_size,
             fill="blue",
         )
-
         # Clear the instruction entry
         self.instruction_entry.delete("1.0", "end")
-
         # Reset dx, dy
         self.dx, self.dy = 0, 0
+        self.enable_disable_buttons()
 
     def is_valid_position(self, x, y):
         # Check if the new position is within the maze boundaries and is a valid path (i.e., maze walls)
