@@ -3,7 +3,6 @@ import tkinter as tk
 from tkinter import messagebox
 import pygame
 
-
 class MazeGame(tk.Tk):
     def __init__(self, maze_size=10):
         super().__init__()
@@ -21,19 +20,21 @@ class MazeGame(tk.Tk):
         self.maze_size = maze_size
         self.maze = [
             [0, 'B', 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 1, 1, 1, 1, 1, 1, 0],
-            [0, 1, 0, 1, 0, 0, 0, 0, 1, 0],
-            [0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
-            [0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
-            [0, 1, 0, 1, 1, 1, 0, 1, 1, 0],
-            [0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
-            [0, 0, 1, 1, 0, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+            [0, 1, 1, 1, 1, 0, 1, 1, 1, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 0, 1, 0],
+            [0, 1, 0, 0, 0, 0, 1, 0, 1, 0],
+            [0, 1, 1, 1, 0, 1, 1, 0, 1, 0],
             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 1, 1, 1, 1, 'E', 0],
+            [0, 1, 1, 1, 1, 1, 1, 1,  'E', 0],
         ]
 
         self.start_pos = self.find_position('B')
-        self.end_pos = self.find_position('E')
+        print ( f"B position :{self.start_pos}") 
+        self.end_pos = (9, 9) # self.find_position('E')
+        print ( f"E position :{self.end_pos}") 
         self.current_pos = self.start_pos
 
         # Create maze canvas
@@ -55,19 +56,6 @@ class MazeGame(tk.Tk):
         tk.Label(self.instruction_frame, text="Instructions:", font=("Arial", 14)).pack()
         self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25, font=("Arial", 14))
         self.instruction_entry.pack(pady=10)
-
-        self.instruction_entry.insert(tk.END, "Move Down 3\n")
-        self.instruction_entry.insert(tk.END, "Move Right 2\n")
-        self.instruction_entry.insert(tk.END, "Move Up 2\n")
-        self.instruction_entry.insert(tk.END, "Move Right 5\n")
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Left 3\n")
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Left 2\n")
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Left 1\n")
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Right 6\n")
 
         # Buttons
         self.execute_button = tk.Button(
@@ -253,19 +241,6 @@ class MazeGame(tk.Tk):
 
         # Clear the instruction entry
         self.instruction_entry.delete("1.0", "end")
-
-        self.instruction_entry.insert(tk.END, "Move Down 3\n")
-        self.instruction_entry.insert(tk.END, "Move Right 2\n")
-        self.instruction_entry.insert(tk.END, "Move Up 2\n")
-        self.instruction_entry.insert(tk.END, "Move Right 5\n")
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Left 3\n")
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Left 2\n")  # Fixed typo here
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Left 1\n")
-        self.instruction_entry.insert(tk.END, "Move Down 2\n")
-        self.instruction_entry.insert(tk.END, "Move Right 6\n")
 
         # Reset dx, dy
         self.dx, self.dy = 0, 0
