@@ -75,15 +75,15 @@ class MazeGame(tk.Tk):
         )
         self.execute_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.pause_button = tk.Button(
-            self.control_frame, text="Pause", command=self.pause_game
-        )
-        self.pause_button.pack(side=tk.LEFT, padx=5, pady=5)
+        # self.pause_button = tk.Button(
+        #             self.control_frame, text="Pause", command=self.pause_game
+        #         )
+        #         self.pause_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.continue_button = tk.Button(
-            self.control_frame, text="Continue", command=self.continue_game
-        )
-        self.continue_button.pack(side=tk.LEFT, padx=5, pady=5)
+        #         self.continue_button = tk.Button(
+        #             self.control_frame, text="Continue", command=self.continue_game
+        #         )
+        #         self.continue_button.pack(side=tk.LEFT, padx=5, pady=5)
 
         self.reset_button = tk.Button(
             self.control_frame, text="Reset", command=self.reset_game
@@ -164,27 +164,27 @@ class MazeGame(tk.Tk):
     def pause_game(self):
         self.paused = True
         self.execute_button.config(state=tk.DISABLED)
-        self.pause_button.config(state=tk.DISABLED)
-        self.continue_button.config(state=tk.NORMAL)
+        # self.pause_button.config(state=tk.DISABLED)
+        # self.continue_button.config(state=tk.NORMAL)
         self.reset_button.config(state=tk.NORMAL)
 
     def enable_disable_buttons(self):
         if self.instructions.count == 0:
             self.execute_button.config(state=tk.DISABLED)
-            self.pause_button.config(state=tk.DISABLED)
-            self.continue_button.config(state=tk.DISABLED)
+            # self.pause_button.config(state=tk.DISABLED)
+            # self.continue_button.config(state=tk.DISABLED)
             self.reset_button.config(state=tk.NORMAL)
         else:
             self.execute_button.config(state=tk.NORMAL)
-            self.pause_button.config(state=tk.DISABLED)
-            self.continue_button.config(state=tk.DISABLED)
+            # self.pause_button.config(state=tk.DISABLED)
+            # self.continue_button.config(state=tk.DISABLED)
             self.reset_button.config(state=tk.NORMAL)
 
     def execute_instruction(self):
         self.instructions = self.instruction_entry.get("1.0", "end-1c").splitlines()
         self.execute_button.config(state=tk.DISABLED)
-        self.pause_button.config(state=tk.NORMAL)
-        self.continue_button.config(state=tk.DISABLED)
+        # self.pause_button.config(state=tk.NORMAL)
+        # self.continue_button.config(state=tk.DISABLED)
         self.paused = False
         self.execute_next_instruction()
 
@@ -224,7 +224,7 @@ class MazeGame(tk.Tk):
                         self.move(0, 1)
 
                     # Add a delay between each move (e.g., 0.5 seconds)
-                    time.sleep(0.5)  # Sleep for 0.5 seconds
+                    time.sleep(0.25)  # Sleep for 0.5 seconds
 
                     # Update the Tkinter main loop to refresh the canvas
                     self.update()
