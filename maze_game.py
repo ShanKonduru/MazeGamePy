@@ -32,9 +32,9 @@ class MazeGame(tk.Tk):
             ]
 
         self.start_pos = self.find_position('B')
-        print ( f"B position :{self.start_pos}") 
-        self.end_pos = (9, 9) # self.find_position('E')
-        print ( f"E position :{self.end_pos}") 
+        print ( f"B position :{self.start_pos}")
+        self.end_pos = self.find_position('E')
+        print ( f"E position :{self.end_pos}")
         self.current_pos = self.start_pos
 
         # Create maze canvas
@@ -157,20 +157,14 @@ class MazeGame(tk.Tk):
     def enable_disable_buttons(self):
         if self.instructions.count == 0:
             self.execute_button.config(state=tk.DISABLED)
-            # self.pause_button.config(state=tk.DISABLED)
-            # self.continue_button.config(state=tk.DISABLED)
             self.reset_button.config(state=tk.NORMAL)
         else:
             self.execute_button.config(state=tk.NORMAL)
-            # self.pause_button.config(state=tk.DISABLED)
-            # self.continue_button.config(state=tk.DISABLED)
             self.reset_button.config(state=tk.NORMAL)
 
     def execute_instruction(self):
         self.instructions = self.instruction_entry.get("1.0", "end-1c").splitlines()
         self.execute_button.config(state=tk.DISABLED)
-        # self.pause_button.config(state=tk.NORMAL)
-        # self.continue_button.config(state=tk.DISABLED)
         self.paused = False
         self.execute_next_instruction()
 
@@ -261,7 +255,6 @@ class MazeGame(tk.Tk):
             return True
         else:
             return False
-
 
 if __name__ == "__main__":
     game = MazeGame()
