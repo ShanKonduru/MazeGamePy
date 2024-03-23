@@ -16,8 +16,6 @@ class MazeGame(tk.Tk):
         # Initialize pygame mixer
         pygame.mixer.init()
 
-        # self.jackpot_sound = pygame.mixer.Sound("jackpot.wav")  # You can replace "jackpot.wav" with the path to your jackpot winning sound file
-
         # Maze parameters
         self.maze_size = maze_size
         self.maze = [
@@ -52,10 +50,13 @@ class MazeGame(tk.Tk):
         self.instruction_frame = tk.Frame(self.control_frame)
         self.instruction_frame.pack()
 
+        # Set background color of the form to pitch black
+        self.root.configure(bg="black")
+
         # Instruction grid
         tk.Label(self.instruction_frame, text="Instructions:").pack()
         self.instruction_entry = tk.Text(
-            self.instruction_frame, width=50, height=10
+            self.instruction_frame, width=50, height=25
         )  # Set width and height
         self.instruction_entry.pack(pady=10)
 
@@ -102,6 +103,9 @@ class MazeGame(tk.Tk):
             (self.end_pos[1] + 1) * cell_size,
             fill="red",
         )
+
+        # Set background color of the canvas to pitch black
+        self.maze_canvas.configure(bg="black")
 
         self.object_id = self.maze_canvas.create_oval(
             self.start_pos[0] * cell_size + 5,
