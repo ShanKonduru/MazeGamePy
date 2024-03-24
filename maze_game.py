@@ -10,7 +10,7 @@ class MazeGame(tk.Tk):
         self.paused = False
         self.index = 0
         self.dx, self.dy = 0, 0  # Initialize dx and dy
-
+        self.cell_size = 40
         self.instructions = []  # Initialize instructions list
 
         self.title("The Maze Game")
@@ -115,42 +115,54 @@ class MazeGame(tk.Tk):
         self.instruction_entry.insert(tk.END, "Move Down 1" + "\n")
 
     def draw_maze(self):
-        cell_size = 40
         for y in range(self.maze_size):
             for x in range(self.maze_size):
                 if self.maze[y][x] == 1:
                     self.maze_canvas.create_rectangle(
-                        x * cell_size,
-                        y * cell_size,
-                        (x + 1) * cell_size,
-                        (y + 1) * cell_size,
+                        x * self.cell_size,
+                        y * self.cell_size,
+                        (x + 1) * self.cell_size,
+                        (y + 1) * self.cell_size,
                         fill="white",
                     )
                 elif self.maze[y][x] == 'B':
                     self.maze_canvas.create_rectangle(
-                        x * cell_size,
-                        y * cell_size,
-                        (x + 1) * cell_size,
-                        (y + 1) * cell_size,
+                        x * self.cell_size,
+                        y * self.cell_size,
+                        (x + 1) * self.cell_size,
+                        (y + 1) * self.cell_size,
                         fill="green",
                     )
                 elif self.maze[y][x] == 'E':
                     self.maze_canvas.create_rectangle(
-                        x * cell_size,
-                        y * cell_size,
-                        (x + 1) * cell_size,
-                        (y + 1) * cell_size,
+                        x * self.cell_size,
+                        y * self.cell_size,
+                        (x + 1) * self.cell_size,
+                        (y + 1) * self.cell_size,
                         fill="red",
                     )
         # Set background color of the canvas to pitch black
         self.maze_canvas.configure(bg="black")
 
+        # self.create_oval(self, color="blue")
+        # self.create_rectangle("pink")
+
+    def create_rectangle(self, color="pink"):
+        self.object_id = self.maze_canvas.create_rectangle(
+            self.start_pos[0] * self.cell_size + 5,
+            self.start_pos[1] * self.cell_size + 5,
+            (self.start_pos[0] + 1) * self.cell_size - 5,
+            (self.start_pos[1] + 1) * self.cell_size - 5,
+            fill=color,
+        )
+
+    def create_oval(self, color ="blue"):
         self.object_id = self.maze_canvas.create_oval(
-            self.start_pos[0] * cell_size + 5,
-            self.start_pos[1] * cell_size + 5,
-            (self.start_pos[0] + 1) * cell_size - 5,
-            (self.start_pos[1] + 1) * cell_size - 5,
-            fill="blue",
+            self.start_pos[0] * self.cell_size + 5,
+            self.start_pos[1] * self.cell_size + 5,
+            (self.start_pos[0] + 1) * self.cell_size - 5,
+            (self.start_pos[1] + 1) * self.cell_size - 5,
+            fill=color,
         )
 
     def move(self, dx, dy):
@@ -194,8 +206,6 @@ class MazeGame(tk.Tk):
     def pause_game(self):
         self.paused = True
         self.execute_button.config(state=tk.DISABLED)
-        # self.pause_button.config(state=tk.DISABLED)
-        # self.continue_button.config(state=tk.NORMAL)
         self.reset_button.config(state=tk.NORMAL)
 
     def enable_disable_buttons(self):
@@ -255,7 +265,12 @@ class MazeGame(tk.Tk):
 
                     # Highlight the executed instruction by changing the background color to green
                     self.highlight_instruction(index)
-
+            elif (parts[0].lower() == "change"):
+                if(parts[1].lower() == "shape"):
+                    if(parts[2].lower() == "rectangle"):
+                        self.create_rectangle(parts[3].lower())
+                    elif (parts[2].lower() == "ovel"):
+                        self.create_oval(parts[3].lower())
             else:
                 print(f"Error with {instruction}")
                 break  # Stop executing further instructions on error
