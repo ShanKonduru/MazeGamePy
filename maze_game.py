@@ -6,7 +6,8 @@ import pygame
 class MazeGame(tk.Tk):
     def __init__(self, maze_size=10):
         super().__init__()
-
+        self.ManualMode = True
+        self.AutomaticMode=False
         self.paused = False
         self.index = 0
         self.dx, self.dy = 0, 0  # Initialize dx and dy
@@ -47,27 +48,24 @@ class MazeGame(tk.Tk):
         # Create control panels
         self.control_frame = tk.Frame(self)
         self.control_frame.pack(side=tk.RIGHT, padx=20, pady=20)
-
-        self.direction_frame = tk.Frame(self.control_frame)
-        self.direction_frame.pack(pady=20)
             
         self.instruction_frame = tk.Frame(self.control_frame)
         self.instruction_frame.pack()
+    
+        # Checkboxes for Manual and Automatic Modes
+        self.manual_mode_var = tk.BooleanVar()
+        self.manual_mode_checkbox = tk.Checkbutton(
+            self.control_frame, text="Manual Mode", variable=self.manual_mode_var, font=("Arial", 14),
+            command=self.checkbox_callback  # Bind callback function
+        )
+        self.manual_mode_checkbox.pack(pady=5)
 
-        # Create a vertical scrollbar
-        self.scrollbar = tk.Scrollbar(self.instruction_frame)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        # Instruction label and Text widget
-        tk.Label(self.instruction_frame, text="Instructions:", font=("Arial", 14)).pack()
-        self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25, font=("Arial", 14))
-        self.instruction_entry.pack(pady=10)
-
-        # Attach scrollbar to the Text widget
-        self.scrollbar.config(command=self.instruction_entry.yview)
-
-        # Bind the MouseWheel event to the Text widget
-        self.instruction_entry.bind("<MouseWheel>", self.on_mousewheel)
+        self.automatic_mode_var = tk.BooleanVar()
+        self.automatic_mode_checkbox = tk.Checkbutton(
+            self.control_frame, text="Automatic Mode", variable=self.automatic_mode_var, font=("Arial", 14),
+            command=self.checkbox_callback  # Bind callback function
+        )
+        self.automatic_mode_checkbox.pack(pady=5)
 
         # Buttons
         self.execute_button = tk.Button(
@@ -80,11 +78,42 @@ class MazeGame(tk.Tk):
         )
         self.reset_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
+        # Instruction label and Text widget
+        tk.Label(self.instruction_frame, text="Instructions:", font=("Arial", 14)).pack()
+        self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25, font=("Arial", 14))
+        self.instruction_entry.pack(pady=10)
+
+        # Create a vertical scrollbar
+        self.scrollbar = tk.Scrollbar(self.instruction_frame)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Attach scrollbar to the Text widget
+        self.scrollbar.config(command=self.instruction_entry.yview)
+
+        # Bind the MouseWheel event to the Text widget
+        self.instruction_entry.bind("<MouseWheel>", self.on_mousewheel)
+
         # Bind keyboard controls
         self.bind("<Up>", lambda event: self.move(0, -1))
         self.bind("<Down>", lambda event: self.move(0, 1))
         self.bind("<Left>", lambda event: self.move(-1, 0))
         self.bind("<Right>", lambda event: self.move(1, 0))
+
+    def checkbox_callback(self):
+        # Execute some code when any checkbox is checked
+        if self.manual_mode_var.get():
+            print("Manual Mode checked!")
+            self.ManualMode = True
+            self.AutomaticMode=False
+            self.automatic_mode_var.set(False)
+            self.create_oval()
+        elif self.automatic_mode_var.get():
+            print("Automatic Mode checked!")
+            # Add your code for Automatic Mode here
+            self.ManualMode = False
+            self.AutomaticMode = True
+            self.manual_mode_var.set(False)
+            self.create_rectangle()
 
     def on_mousewheel(self, event):
         # Scroll the Text widget with the mouse wheel
@@ -169,17 +198,18 @@ class MazeGame(tk.Tk):
         new_x = self.current_pos[0] + dx
         new_y = self.current_pos[1] + dy
 
-        if(dx == 0 ):
-            if(dy == -1 ):
-                self.move_up()
-            elif (dy == 1 ):
-                self.move_down()
-        elif(dx == -1 ):
-            if(dy == 0 ):
-                self.move_left()
-        elif (dx == 1 ):
-            if(dy == 0 ):
-                self.move_right()
+        if(self.ManualMode):
+            if(dx == 0 ):
+                if(dy == -1 ):
+                    self.move_up()
+                elif (dy == 1 ):
+                    self.move_down()
+            elif(dx == -1 ):
+                if(dy == 0 ):
+                    self.move_left()
+            elif (dx == 1 ):
+                if(dy == 0 ):
+                    self.move_right()
 
         if (
             0 <= new_x < self.maze_size
@@ -282,13 +312,12 @@ class MazeGame(tk.Tk):
         # Reset the object position to the initial position
         self.current_pos = self.start_pos
         x, y = self.start_pos
-        cell_size = 40
 
         self.object_id = self.maze_canvas.create_oval(
-            self.start_pos[0] * cell_size + 5,
-            self.start_pos[1] * cell_size + 5,
-            (self.start_pos[0] + 1) * cell_size - 5,
-            (self.start_pos[1] + 1) * cell_size - 5,
+            self.start_pos[0] * self.cell_size + 5,
+            self.start_pos[1] * self.cell_size + 5,
+            (self.start_pos[0] + 1) * self.cell_size - 5,
+            (self.start_pos[1] + 1) * self.cell_size - 5,
             fill="blue",
         )
 
