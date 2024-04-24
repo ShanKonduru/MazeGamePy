@@ -14,7 +14,7 @@ class MazeGame(tk.Tk):
         self.cell_size = 40
         self.instructions = []  # Initialize instructions list
 
-        self.title("The Maze Game")
+        self.title("CodeQuest: Maze Adventures")
 
         # Initialize pygame mixer
         pygame.mixer.init()
@@ -78,9 +78,10 @@ class MazeGame(tk.Tk):
         )
         self.reset_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
+        tk.Label(self.instruction_frame, text="CodeQuest: Maze Adventures", font=("Arial", 14)).pack()
         # Instruction label and Text widget
         tk.Label(self.instruction_frame, text="Instructions:", font=("Arial", 14)).pack()
-        self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=25, font=("Arial", 14))
+        self.instruction_entry = tk.Text(self.instruction_frame, width=50, height=15, font=("Arial", 14))
         self.instruction_entry.pack(pady=10)
 
         # Create a vertical scrollbar
