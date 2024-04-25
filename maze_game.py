@@ -21,7 +21,7 @@ class MazeGame(tk.Tk):
 
         # Maze parameters
         self.maze_size = maze_size
-        maze_generator = MazeGenerator()
+        maze_generator = MazeGenerator.MazeGenerator()
         self.maze  = maze_generator.get_random_maze()
 
         self.start_pos = self.find_position('B')
