@@ -2,7 +2,7 @@ import time
 import tkinter as tk
 from tkinter import messagebox
 import pygame
-
+import MazeGenerator
 class MazeGame(tk.Tk):
     def __init__(self, maze_size=10):
         super().__init__()
@@ -21,18 +21,8 @@ class MazeGame(tk.Tk):
 
         # Maze parameters
         self.maze_size = maze_size
-        self.maze = [
-            [0, 'B', 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 1, 1, 1, 1, 1, 1, 0],
-            [0, 1, 0, 1, 0, 0, 0, 0, 1, 0],
-            [0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
-            [0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
-            [0, 1, 0, 1, 1, 1, 0, 1, 1, 0],
-            [0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
-            [0, 0, 1, 1, 0, 1, 1, 1, 1, 0],
-            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 1, 1, 1, 1, 'E', 0],
-            ]
+        maze_generator = MazeGenerator()
+        self.maze  = maze_generator.get_random_maze()
 
         self.start_pos = self.find_position('B')
         print ( f"B position :{self.start_pos}")
